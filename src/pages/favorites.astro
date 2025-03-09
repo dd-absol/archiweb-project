@@ -1,0 +1,19 @@
+---
+import RecipePreview from "../components/RecipePreview.astro";
+import Layout from "../layouts/Layout.astro";
+import type { RecipeData } from "../types/RecipeData";
+
+const url = "https://gourmet.cours.quimerch.com/favorites";
+
+const response = await fetch(url, {
+  headers: {
+    Accept: "application/json",
+  },
+});
+
+const data: RecipeData[] = await response.json();
+---
+
+<Layout>
+  {data.map((recipe) => <RecipePreview data={recipe} />)}
+</Layout>

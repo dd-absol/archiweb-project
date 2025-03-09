@@ -1,0 +1,24 @@
+---
+import type { RecipeData } from "../types/RecipeData.ts";
+
+interface Props {
+  data: RecipeData;
+}
+
+const { data } = Astro.props;
+---
+
+<style>
+  img {
+    height: 100px;
+    width: 100px;
+  }
+</style>
+
+<a href=`/recettes/${data.id}`>
+  <button>
+    <h1>{data.name}</h1>
+    <img src={data.image_url} />
+    <p>Preparation time: {data.cook_time} minutes</p>
+  </button>
+</a>
