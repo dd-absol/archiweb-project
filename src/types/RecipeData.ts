@@ -10,7 +10,7 @@ type RecipeData = {
   cost: number;
   created_at: string;
   created_by: string;
-  intructions: string;
+  instructions: string;
   prep_time: number;
   published: boolean;
   servings: number;

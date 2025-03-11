@@ -1,11 +1,49 @@
 ---
-import Layout from "../layouts/Layout.astro"
+export const prerender = false;
+import Layout from "../layouts/Layout.astro";
 
 const url = "https://gourmet.cours.quimerch.com/login";
 
+if (Astro.request.method === "POST") {
+  try {
+    const data = await Astro.request.formData();
+
+    const name = data.get("username");
+    const password = data.get("password");
+
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-type": "multipart/*"
+      },
+      body: JSON.stringify({
+        password: password,
+        username: name
+      })
+    })
+
+    const responseData = await response.json();
+
+    console.log(responseData);
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error(error.message);
+    }
+  }
+}
 ---
 
 <Layout>
-
+  <h1>Register</h1>
+  <form method="POST">
+    <label>
+      Username:
+      <input type="text" name="username" required />
+    </label>
+    <label>
+      Password:
+      <input type="password" name="password" required />
+    </label>
+    <button>Submit</button>
+  </form>
 </Layout>
-

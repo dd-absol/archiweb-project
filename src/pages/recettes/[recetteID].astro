@@ -20,5 +20,8 @@ const data: RecipeData = await response.json();
 
 <Layout>
   <RecipePreview data={data}/>
+  <div>
+    <p>{data.instructions}</p>
+  </div>
 </Layout>
 
