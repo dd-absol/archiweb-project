@@ -1,3 +1,17 @@
+---
+import NavigationButton from '../components/NavigationButton.astro';
+
+interface Props {
+  isLoggedIn?: boolean;
+}
+
+const { isLoggedIn } = Astro.props;
+
+if (isLoggedIn == null) {
+  console.log("this props was not passed");
+}
+---
+
 <!doctype html>
 <html lang="en">
   <head>
@@ -9,8 +23,9 @@
   </head>
   <body>
     <nav>
-      <a href="/">Home</a>
-      <a href="/login">Log in</a>
+      <NavigationButton page="/" text="Home"/>
+      <NavigationButton page="/login" text="Log in"/>
+      <NavigationButton page="/favorites" text="Favorites"/>
     </nav>
     <h1>Gourmet in Astro!</h1>
     <slot />

@@ -1,0 +1,12 @@
+---
+interface Props {
+  page: string;
+  text: string;
+}
+
+const { page, text } = Astro.props;
+---
+
+<a href={page}> 
+  <button>{text}</button>
+</a>

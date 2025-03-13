@@ -1,18 +1,28 @@
 ---
+export const prerender = false;
+
+import { undefined } from "astro:schema";
 import RecipePreview from "../components/RecipePreview.astro";
 import Layout from "../layouts/Layout.astro";
 import type { RecipeData } from "../types/RecipeData";
 
 const url = "https://gourmet.cours.quimerch.com/favorites";
+let data: RecipeData[] = [];
 
-const response = await fetch(url, {
-  headers: {
-    Accept: "application/json",
-  },
-});
+if (Astro.cookies.has("token")) {
+  const cookie = Astro.cookies.get("token")?.value;
 
-const data: RecipeData[] = await response.json();
+  const response = await fetch(url, {
+    headers: {
+      Accept: "application/json",
+      Cookie: `jwt_token=${cookie}`,
+    },
+  });
+
+   data = await response.json();
+}
 ---
 
 <Layout>
+  {data == null && <p>No favorites added as of yet!</p>}
 </Layout>

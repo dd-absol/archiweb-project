@@ -3,6 +3,7 @@ export const prerender = false;
 import Layout from "../layouts/Layout.astro";
 
 const url = "https://gourmet.cours.quimerch.com/login";
+let loginError = false;
 
 if (Astro.request.method === "POST") {
   try {
@@ -14,17 +15,22 @@ if (Astro.request.method === "POST") {
     const response = await fetch(url, {
       method: "POST",
       headers: {
-        "Content-type": "multipart/*"
+        "Content-type": "multipart/*",
       },
       body: JSON.stringify({
         password: password,
-        username: name
-      })
-    })
+        username: name,
+      }),
+    });
 
-    const responseData = await response.json();
+    if (response.status == 200) {
+      const responseData = await response.json();
 
-    console.log(responseData);
+      Astro.cookies.set("token", responseData.token);
+      return Astro.redirect("/favorites");
+    } else {
+      loginError = true;
+    }
   } catch (error) {
     if (error instanceof Error) {
       console.error(error.message);
@@ -35,6 +41,7 @@ if (Astro.request.method === "POST") {
 
 <Layout>
   <h1>Register</h1>
+  {loginError && <p>Login failed, Please try again!</p>}
   <form method="POST">
     <label>
       Username:
