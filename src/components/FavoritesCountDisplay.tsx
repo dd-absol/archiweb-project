@@ -1,11 +1,16 @@
 import React, { useEffect, useState } from "react";
 
-const FavoritesCountDisplay = () => {
+type FavoritesCountDisplayProps  = {
+  id: string
+}
+
+const FavoritesCountDisplay = (props: FavoritesCountDisplayProps) => {
   const [count, setCount] = useState(0);
+  const url = `https://gourmet.cours.quimerch.com/recipes/${props.id}/stars`;
 
   useEffect(() => {
     // opening a connection to the server to begin receiving events from it
-    const eventSource = new EventSource("https://gourmet.cours.quimerch.com/recipes/raclt/stars/fake");
+    const eventSource = new EventSource(url);
 
     // attaching a handler to opening connection so that we can debug
     eventSource.onopen = () => {
