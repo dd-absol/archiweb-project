@@ -23,7 +23,7 @@ const username = await getUsername(Astro.cookies);
 const data: RecipeData = await response.json();
 ---
 
-<Layout isLoggedIn={username != null}>
+<Layout isLoggedIn={username != null} isPreviewPage={true}>
   <div class="max-w-4xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
     {/* Recipe Preview (Header Section) */}
     <div class="mb-8">
