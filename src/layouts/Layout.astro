@@ -1,3 +1,20 @@
+---
+import NavigationButton from "../components/NavigationButton.astro";
+import { logout } from "../utils/loginUtils";
+
+// we import all styles for all pages from here
+import "../styles/global.css";
+
+interface Props {
+  isLoggedIn?: boolean;
+}
+
+const { isLoggedIn } = Astro.props;
+if (Astro.request.method == "POST") {
+  logout(Astro.cookies);
+}
+---
+
 <!doctype html>
 <html lang="en">
   <head>
@@ -5,18 +22,50 @@
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
-    <title>Astro Basics</title>
+    <title>Gourmet</title>
   </head>
-  <body>
-    <slot />
-  </body>
-</html>
+  <body class="min-h-screen bg-gray-50">
+    <nav class="bg-white shadow-sm">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between h-16">
+          <div class="flex">
+            <NavigationButton page="/" text="Home" />
+            <NavigationButton page="/favorites" text="Favorites" />
+          </div>
+          <div class="flex">
+            {
+              !isLoggedIn ? (
+                <NavigationButton page="/login" text="Log in" />
+              ) : (
+                <div class="inline-flex items-center px-3 py-2 border-b-2 border-transparent text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300">
+                  <form method="POST">
+                    <button>Log out</button>
+                  </form>
+                </div>
+              )
+            }
+          </div>
+        </div>
+      </div>
 
-<style>
-  html,
-  body {
-    margin: 0;
-    width: 100%;
-    height: 100%;
-  }
-</style>
+      <header class="bg-white shadow">
+        <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+          <h1 class="text-3xl font-bold text-gray-900">Gourmet in Astro!</h1>
+        </div>
+      </header>
+
+      <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+        <slot />
+      </main>
+    </nav>
+  </body>
+
+  <style>
+    html,
+    body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+</html>

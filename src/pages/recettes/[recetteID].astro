@@ -1,0 +1,65 @@
+---
+// we are doing true dynamic routing here so we do not want to prerender pages at build time
+export const prerender = false;
+
+import RecipePreview from "../../components/RecipePreview.astro";
+import Layout from "../../layouts/Layout.astro";
+import type { RecipeData } from "../../types/RecipeData";
+import FavoriteButton from "../../components/FavoriteButton.astro";
+import FavoriteCountDisplay from "../../components/FavoritesCountDisplay.tsx";
+import { getUsername } from "../../utils/loginUtils.ts";
+
+const { recetteID } = Astro.params;
+const url = `https://gourmet.cours.quimerch.com/recipes/${recetteID}`;
+
+const response = await fetch(url, {
+  headers: {
+    Accept: "application/json",
+  },
+});
+
+const username = await getUsername(Astro.cookies);
+
+const data: RecipeData = await response.json();
+---
+
+<Layout isLoggedIn = {username != null}>
+  <div class="max-w-4xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
+    {/* Recipe Preview (Header Section) */}
+    <div class="mb-8">
+      <RecipePreview data={data} />
+    </div>
+
+    {/* Main Content Grid */}
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      {/* Instructions Column */}
+      <div class="lg:col-span-2">
+        <div class="bg-white rounded-lg shadow-md p-6">
+          <h2 class="text-2xl font-bold text-gray-900 mb-4">Instructions</h2>
+          <div class="prose max-w-none text-gray-700">
+            {
+              data.instructions
+                .split("\n")
+                .map((paragraph, _) => <p class="mb-4">{paragraph}</p>)
+            }
+          </div>
+        </div>
+      </div>
+
+      {/* Sidebar Column */}
+      <div class="space-y-6">
+        {/* Favorite Actions */}
+        <div
+          class="bg-white rounded-lg shadow-md p-6 flex items-center justify-between"
+        >
+          <FavoriteCountDisplay id={recetteID} client:load />
+          {
+            username ?? (
+              <FavoriteButton username={username} receipeId={recetteID} />
+            )
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>

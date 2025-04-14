@@ -1,0 +1,48 @@
+---
+export const prerender = false;
+
+import RecipePreview from "../components/RecipePreview.astro";
+import Layout from "../layouts/Layout.astro";
+import { isLoggedIn } from "../utils/loginUtils.ts";
+
+const url = "https://gourmet.cours.quimerch.com/favorites";
+
+let loggedIn = await isLoggedIn(Astro.cookies);
+
+let data = [];
+if (loggedIn) {
+  const cookie = Astro.cookies.get("token")?.value;
+
+  const response = await fetch(url, {
+    headers: {
+      Accept: "application/json",
+      Cookie: `jwt_token=${cookie}`,
+    },
+  });
+
+  if (response.status == 200) {
+    data = await response.json();
+  } else {
+    // there was an issue and most likely the user got logged out
+    loggedIn = false;
+  }
+}
+---
+
+<Layout isLoggedIn={loggedIn}>
+  {
+    loggedIn ? (
+      data == null ? (
+        <p>No favorites added as of yet!</p>
+      ) : (
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {data.map((recipe: any) => (
+            <RecipePreview data={recipe.recipe} />
+          ))}
+        </div>
+      )
+    ) : (
+      <p>Please log in to see your favorites!</p>
+    )
+  }
+</Layout>

@@ -1,0 +1,32 @@
+---
+import type { RecipeData } from "../types/RecipeData.ts";
+
+interface Props {
+  data: RecipeData;
+}
+
+const { data } = Astro.props;
+---
+
+<a href={`/recettes/${data.id}`} class="block group">
+  <button class="w-full bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300">
+    <div class="relative pb-[56.25%]"> {/* 16:9 aspect ratio container */}
+      <img 
+        src={data.image_url} 
+        onerror="this.src='/src/assets/images/placeholder.png';"
+        alt={data.name}
+        class="absolute h-full w-full object-cover group-hover:scale-105 transition-transform duration-300"
+      />
+    </div>
+    
+    <div class="p-4">
+      <h1 class="text-xl font-semibold text-gray-900 mb-2 line-clamp-2">{data.name}</h1>
+      <div class="flex items-center text-gray-600">
+        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
+        <p class="text-sm">Preparation time: {data.cook_time} minutes</p>
+      </div>
+    </div>
+  </button>
+</a>
