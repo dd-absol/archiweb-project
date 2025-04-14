@@ -7,6 +7,10 @@ interface Props {
 const { page, text } = Astro.props;
 ---
 
-<a href={page}> 
-  <button>{text}</button>
-</a>
+<div
+  class="inline-flex items-center px-3 py-2 border-b-2 border-transparent text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300"
+>
+  <a href={page}>
+    <button>{text}</button>
+  </a>
+</div>

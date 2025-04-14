@@ -4,6 +4,7 @@ export const prerender = false;
 import Layout from "../layouts/Layout.astro";
 import RecipePreview from "../components/RecipePreview.astro";
 import type { RecipeData } from "../types/RecipeData.ts";
+import Login from "../components/Login.tsx";
 
 const recipes_url = "https://gourmet.cours.quimerch.com/recipes";
 const response = await fetch(recipes_url, {
@@ -16,5 +17,7 @@ const responseData: RecipeData[] = await response.json();
 ---
 
 <Layout>
-  {responseData.map((recipe) => <RecipePreview data={recipe} />)}
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    {responseData.map((recipe) => <RecipePreview data={recipe} />)}
+  </div>
 </Layout>

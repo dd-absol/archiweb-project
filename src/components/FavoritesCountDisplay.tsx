@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 type FavoritesCountDisplayProps  = {
   id: string
@@ -12,14 +12,8 @@ const FavoritesCountDisplay = (props: FavoritesCountDisplayProps) => {
     // opening a connection to the server to begin receiving events from it
     const eventSource = new EventSource(url);
 
-    // attaching a handler to opening connection so that we can debug
-    eventSource.onopen = () => {
-      console.log("opened connection");
-    }
-    
     // attaching a handler to receive message events
     eventSource.addEventListener("count", (event) => {
-      console.log(event.data);
       setCount(event.data);
     });
     
