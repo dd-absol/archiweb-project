@@ -22,7 +22,7 @@ const FavoritesCountDisplay = (props: FavoritesCountDisplayProps) => {
   }, []);
 
   return (
-    <div><p>{count}</p></div>
+    <div><p>{count} users like this!</p></div>
   );
 };
 

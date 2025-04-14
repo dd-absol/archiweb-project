@@ -7,6 +7,7 @@ import Layout from "../../layouts/Layout.astro";
 import type { RecipeData } from "../../types/RecipeData";
 import FavoriteButton from "../../components/FavoriteButton.astro";
 import FavoriteCountDisplay from "../../components/FavoritesCountDisplay.tsx";
+import { getUsername } from "../../utils/loginUtils.ts";
 
 const { recetteID } = Astro.params;
 const url = `https://gourmet.cours.quimerch.com/recipes/${recetteID}`;
@@ -17,10 +18,12 @@ const response = await fetch(url, {
   },
 });
 
+const username = await getUsername(Astro.cookies);
+
 const data: RecipeData = await response.json();
 ---
 
-<Layout>
+<Layout isLoggedIn = {username != null}>
   <div class="max-w-4xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
     {/* Recipe Preview (Header Section) */}
     <div class="mb-8">
@@ -35,11 +38,9 @@ const data: RecipeData = await response.json();
           <h2 class="text-2xl font-bold text-gray-900 mb-4">Instructions</h2>
           <div class="prose max-w-none text-gray-700">
             {
-              data.instructions.split("\n").map((paragraph, i) => (
-                <p key={i} class="mb-4">
-                  {paragraph}
-                </p>
-              ))
+              data.instructions
+                .split("\n")
+                .map((paragraph, _) => <p class="mb-4">{paragraph}</p>)
             }
           </div>
         </div>
@@ -51,11 +52,12 @@ const data: RecipeData = await response.json();
         <div
           class="bg-white rounded-lg shadow-md p-6 flex items-center justify-between"
         >
-          <FavoriteCountDisplay
-            id={recetteID}
-            client:load
-          />
-          <FavoriteButton username="alpha" receipeId={recetteID} />
+          <FavoriteCountDisplay id={recetteID} client:load />
+          {
+            username ?? (
+              <FavoriteButton username={username} receipeId={recetteID} />
+            )
+          }
         </div>
       </div>
     </div>

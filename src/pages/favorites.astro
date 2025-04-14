@@ -3,12 +3,14 @@ export const prerender = false;
 
 import RecipePreview from "../components/RecipePreview.astro";
 import Layout from "../layouts/Layout.astro";
+import { isLoggedIn } from "../utils/loginUtils.ts";
 
 const url = "https://gourmet.cours.quimerch.com/favorites";
-let data = [];
-let isLoggedIn = true;
 
-if (Astro.cookies.has("token")) {
+let loggedIn = await isLoggedIn(Astro.cookies);
+
+let data = [];
+if (loggedIn) {
   const cookie = Astro.cookies.get("token")?.value;
 
   const response = await fetch(url, {
@@ -18,19 +20,18 @@ if (Astro.cookies.has("token")) {
     },
   });
 
-  if (response.status != 200) {
-    isLoggedIn = false;
-  } else {
+  if (response.status == 200) {
     data = await response.json();
+  } else {
+    // there was an issue and most likely the user got logged out
+    loggedIn = false;
   }
-} else {
-  isLoggedIn = false;
 }
 ---
 
-<Layout>
+<Layout isLoggedIn={loggedIn}>
   {
-    isLoggedIn ? (
+    loggedIn ? (
       data == null ? (
         <p>No favorites added as of yet!</p>
       ) : (
